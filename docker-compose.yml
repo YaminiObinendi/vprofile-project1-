@@ -11,7 +11,6 @@ services:
       - vprodbdata:/var/lib/mysql
    environment:
       - MYSQL_ROOT_PASSWORD=admin123
-      - MYSQL_DATABASE =accounts
     
   mc01:
    image: memcached
