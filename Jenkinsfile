@@ -2,7 +2,7 @@ pipeline {
     agent {label 'Node1'}
 
     environment {
-        DOCKER_IMAGE_NAME = "yaminiobinendi/vprofile"  
+        DOCKER_IMAGE_NAME = "yaminiobinendi/vprofile.app"  
         DOCKER_CREDENTIALS = "dockerhub-credentials" 
         
     }
@@ -38,7 +38,7 @@ pipeline {
 
                     // Build the Docker image with the build number as the tag
                     sh """
-                    docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} .
+                    docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} Docker-files/app/Dockerfile
                     """
 
                     // Login to Docker Hub
