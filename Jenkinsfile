@@ -38,7 +38,7 @@ pipeline {
 
                     // Build the Docker image with the build number as the tag
                     sh """
-                    docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} Docker-files/app/Dockerfile
+                    docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} .
                     """
 
                     // Login to Docker Hub
