@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label 'Node1'}
 
     environment {
         DOCKER_IMAGE_NAME = "yaminiobinendi/vprofile"  
