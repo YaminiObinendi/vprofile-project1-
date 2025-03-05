@@ -38,7 +38,7 @@ pipeline {
 
                     // Build the Docker image with the build number as the tag
                     sh """
-                    docker build -t ${DOCKER_IMAGE_NAME}:${buildNumber} .
+                    docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} .
                     """
 
                     // Login to Docker Hub
@@ -49,7 +49,7 @@ pipeline {
 
                         // Push the Docker image to Docker Hub
                         sh """
-                        docker push ${DOCKER_IMAGE_NAME}:${buildNumber}
+                        docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
                         """
                     }
                 }
