@@ -1,56 +1,49 @@
 pipeline {
-    agent {label 'Node1'}
+    agent any
 
     environment {
-        DOCKER_IMAGE_NAME = "yaminiobinendi/vprofile.app"  
-        DOCKER_CREDENTIALS = "dockerhub-credentials" 
-        
+        TOMCAT_SERVER = "51.21.201.144" // Tomcat server address
+        TOMCAT_WEBAPPS_DIR = "/opt/tomcat9/webapps" // Replace with your Tomcat webapps directory path
+        ARTIFACT_NAME = "vprofile.war" // Name of your artifact (adjust as necessary)
     }
 
     stages {
+        // Stage 1: SCM Checkout
         stage('SCM Checkout') {
             steps {
                 script {
-                    git branch: 'docker', url: 'https://github.com/YaminiObinendi/vprofile-project1-.git'
+                    // Checkout the code from the Git repository
+                    git branch: 'jenkins', url: 'https://github.com/YaminiObinendi/vprofile-project1-.git'
                 }
             }
         }
 
+        // Stage 2: Maven Build
         stage('Maven Build') {
             steps {
                 script {
-                    // Run Maven build
-                    sh "mvn clean install -Dversion=${env.BUILD_NUMBER}"
+                    // Run Maven build and generate the artifact, using the Jenkins build number as the version
+                    sh "mvn clean install  -Dversion=${env.BUILD_ID}"
+                    
+                    // Archive the artifact  for later stages if needed
+                    archiveArtifacts artifacts: "target/${ARTIFACT_NAME}", allowEmptyArchive: true
                 }
             }
         }
 
-        stage('Docker Build') {
+        // Stage 3: Deploy to Tomcat
+        stage('Deploy') {
             steps {
                 script {
-                    def artifactPath = "/home/ubuntu/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.war"
+                    def artifactPath = "target/${ARTIFACT_NAME}"
 
-                    // Copy the artifact into the Docker context (e.g., tomcat webapps directory)
-                    sh """
-                    mkdir -p ./webapps
-                    cp ${artifactPath} ./webapps/
-                    """
-
-                    // Build the Docker image with the build number as the tag
-                    sh """
-                    docker build -f Docker-files/app/Dockerfile -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} .
-                    """
-
-                    // Login to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh """
-                        docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} 
-                        """
-
-                        // Push the Docker image to Docker Hub
-                        sh """
-                        docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}
-                        """
+                    if (fileExists(artifactPath)) {
+                        // Deploy the WAR file to Tomcat webapps directory
+                        sh "cp ${artifactPath} ${TOMCAT_WEBAPPS_DIR}/"
+                        
+                        
+                    } else {
+                        error "Artifact not found: ${artifactPath}"
                     }
                 }
             }
