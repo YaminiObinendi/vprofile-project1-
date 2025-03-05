@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent {label 'Node1'}
 
     environment {
         TOMCAT_SERVER = "51.21.201.144" // Tomcat server address
