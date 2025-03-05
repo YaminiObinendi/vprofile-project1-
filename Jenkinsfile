@@ -28,7 +28,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    def artifactPath = "/home/ubuntu/workspace/Dockerbuildjob/target/vprofile-v2.war"
+                    def artifactPath = "/home/ubuntu/.m2/repository/com/visualpathit/vprofile/v2/vprofile-v2.war"
 
                     // Copy the artifact into the Docker context (e.g., tomcat webapps directory)
                     sh """
