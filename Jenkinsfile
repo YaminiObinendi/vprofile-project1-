@@ -4,7 +4,7 @@ pipeline {
     environment {
         TOMCAT_SERVER = "51.21.201.144" // Tomcat server address
         TOMCAT_WEBAPPS_DIR = "/opt/tomcat9/webapps" // Replace with your Tomcat webapps directory path
-        ARTIFACT_NAME = "vprofile.war" // Name of your artifact (adjust as necessary)
+        ARTIFACT_NAME = "vprofile-v2.war" // Name of your artifact (adjust as necessary)
     }
 
     stages {
@@ -26,7 +26,7 @@ pipeline {
                     sh "mvn clean install  -Dversion=${env.BUILD_ID}"
                     
                     // Archive the artifact  for later stages if needed
-                    archiveArtifacts artifacts: "target/${ARTIFACT_NAME}", allowEmptyArchive: true
+                    archiveArtifacts artifacts: "/home/ubuntu/workspace/Tomcat-Job/target/${ARTIFACT_NAME}", allowEmptyArchive: true
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def artifactPath = "target/${ARTIFACT_NAME}"
+                    def artifactPath = "/home/ubuntu/workspace/Tomcat-Job/target/${ARTIFACT_NAME}"
 
                     if (fileExists(artifactPath)) {
                         // Deploy the WAR file to Tomcat webapps directory
