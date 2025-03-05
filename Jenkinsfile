@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // Run Maven build
-                    sh "mvn clean install -Dversion=${BUILD_NUMBER}"
+                    sh "mvn clean install -Dversion=${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -38,7 +38,7 @@ pipeline {
 
                     // Build the Docker image with the build number as the tag
                     sh """
-                    docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker build -t ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} .
                     """
 
                     // Login to Docker Hub
@@ -49,7 +49,7 @@ pipeline {
 
                         // Push the Docker image to Docker Hub
                         sh """
-                        docker push ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}
                         """
                     }
                 }
